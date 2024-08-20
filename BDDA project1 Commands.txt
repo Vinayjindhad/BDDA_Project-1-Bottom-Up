@@ -1,0 +1,279 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\sumit> mysql -u root -p
+Enter password: ********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 35
+Server version: 8.0.39 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| votercard          |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql> create database myntra;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| myntra             |
+| mysql              |
+| performance_schema |
+| sys                |
+| votercard          |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql> use myntra;
+Database changed
+mysql> CREATE TABLE Customer (
+    ->     CustomerID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     Name VARCHAR(100),
+    ->     Email VARCHAR(100) UNIQUE,
+    ->     Address TEXT,
+    ->     PhoneNumber VARCHAR(15)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE `Order` (
+    ->     OrderID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     CustomerID INT,
+    ->     OrderDate DATE,
+    ->     TotalAmount DECIMAL(10, 2),
+    ->     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE Category (
+    ->     CategoryID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     CategoryName VARCHAR(100)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE Brand (
+    ->     BrandID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     BrandName VARCHAR(100)
+    -> );
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE Product (
+    ->     ProductID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     Name VARCHAR(100),
+    ->     Description TEXT,
+    ->     Price DECIMAL(10, 2),
+    ->     CategoryID INT,
+    ->     BrandID INT,
+    ->     StockQuantity INT,
+    ->     FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID),
+    ->     FOREIGN KEY (BrandID) REFERENCES Brand(BrandID)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> CREATE TABLE OrderItem (
+    ->     OrderItemID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     OrderID INT,
+    ->     ProductID INT,
+    ->     Quantity INT,
+    ->     Price DECIMAL(10, 2),
+    ->     FOREIGN KEY (OrderID) REFERENCES `Order`(OrderID),
+    ->     FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> CREATE TABLE Review (
+    ->     ReviewID INT PRIMARY KEY AUTO_INCREMENT,
+    ->     ProductID INT,
+    ->     CustomerID INT,
+    ->     Rating INT CHECK (Rating >= 1 AND Rating <= 5),
+    ->     Comment TEXT,
+    ->     ReviewDate DATE,
+    ->     FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
+    ->     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+    -> );
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> -- Insert into Customer
+mysql> INSERT INTO Customer (Name, Email, Address, PhoneNumber) VALUES
+    -> ('Alice Smith', 'alice.smith@example.com', '123 Elm Street', '123-456-7890'),
+    -> ('Bob Johnson', 'bob.johnson@example.com', '456 Oak Avenue', '234-567-8901');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Insert into Category
+mysql> INSERT INTO Category (CategoryName) VALUES
+    -> ('Men\'s Wear'),
+    -> ('Women\'s Wear'),
+    -> ('Kids\' Wear');
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Insert into Brand
+mysql> INSERT INTO Brand (BrandName) VALUES
+    -> ('Nike'),
+    -> ('Adidas'),
+    -> ('Puma');
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Insert into Product
+mysql> INSERT INTO Product (Name, Description, Price, CategoryID, BrandID, StockQuantity) VALUES
+    -> ('Nike Running Shoes', 'Comfortable running shoes', 75.00, 1, 1, 50),
+    -> ('Adidas T-shirt', 'Breathable cotton t-shirt', 25.00, 2, 2, 100);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Insert into Order
+mysql> INSERT INTO `Order` (CustomerID, OrderDate, TotalAmount) VALUES
+    -> (1, '2024-08-15', 100.00),
+    -> (2, '2024-08-16', 50.00);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Insert into OrderItem
+mysql> INSERT INTO OrderItem (OrderID, ProductID, Quantity, Price) VALUES
+    -> (1, 1, 1, 75.00),
+    -> (1, 2, 1, 25.00),
+    -> (2, 2, 2, 50.00);
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Insert into Review
+mysql> INSERT INTO Review (ProductID, CustomerID, Rating, Comment, ReviewDate) VALUES
+    -> (1, 1, 5, 'Excellent shoes!', '2024-08-15'),
+    -> (2, 2, 4, 'Good t-shirt, but a bit pricey.', '2024-08-16');
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> CREATE USER 'alice_admin' IDENTIFIED BY 'password123';
+ERROR 1396 (HY000): Operation CREATE USER failed for 'alice_admin'@'%'
+mysql> CREATE USER 'a_admin' IDENTIFIED BY 'password123';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE USER 'b_support' IDENTIFIED BY 'password234';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE USER 'c_manager' IDENTIFIED BY 'password345';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE USER 'd_marketing' IDENTIFIED BY 'password456';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE USER 'e_warehouse' IDENTIFIED BY 'password567';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE ROLE admin;
+ERROR 1396 (HY000): Operation CREATE ROLE failed for 'admin'@'%'
+mysql> CREATE ROLE customer_support;
+ERROR 1396 (HY000): Operation CREATE ROLE failed for 'customer_support'@'%'
+mysql> CREATE ROLE product_manager;
+ERROR 1396 (HY000): Operation CREATE ROLE failed for 'product_manager'@'%'
+mysql> CREATE ROLE marketing;
+ERROR 1396 (HY000): Operation CREATE ROLE failed for 'marketing'@'%'
+mysql> CREATE ROLE warehouse_staff;
+ERROR 1396 (HY000): Operation CREATE ROLE failed for 'warehouse_staff'@'%'
+mysql> CREATE ROLE admins;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE ROLE customersupport;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE ROLE productmanager;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE ROLE marketing_;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>  CREATE ROLE warehousestaff;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT ALL PRIVILEGES ON * TO admins;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- Customer Support Role: Access to Customer, Order, and OrderItem tables
+mysql> GRANT SELECT, INSERT, UPDATE ON Customer TO customersupport;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT SELECT, INSERT, UPDATE ON `Order` TO customersupport;
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> GRANT SELECT, INSERT, UPDATE ON OrderItem TO customersupport;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- Product Manager Role: Access to Product, Category, Brand, and Review tables
+mysql> GRANT SELECT, INSERT, UPDATE ON Product,Category,Brand,Review TO productmanager;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',Category,Brand,Review TO productmanager' at line 1
+mysql> GRANT SELECT, INSERT, UPDATE ON Product , Category , Brand , Review TO productmanager;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ', Category , Brand , Review TO productmanager' at line 1
+mysql> GRANT SELECT, INSERT, UPDATE ON Category TO productmanager;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT SELECT, INSERT, UPDATE ON Brand TO productmanager;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT SELECT, INSERT, UPDATE ON Review TO productmanager;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- Marketing Role: Access to Customer and Review tables
+mysql> GRANT SELECT ON Customer TO marketing_;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT SELECT ON Review TO marketing_;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- Warehouse Staff Role: Access to Product and OrderItem tables
+mysql> GRANT SELECT, UPDATE ON Product TO warehousestaff;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> GRANT SELECT, UPDATE ON OrderItem TO warehousestaff;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- Assigning user 'alice_admin' to Admin role
+mysql> GRANT admins TO 'a_admin';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- Assigning user 'bob_support' to Customer Support role
+mysql> GRANT customersupport TO 'b_support';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- Assigning user 'carol_manager' to Product Manager role
+mysql> GRANT product_manager TO 'carol_manager';
+ERROR 3523 (HY000): Unknown authorization ID `carol_manager`@`%`
+mysql> GRANT productmanager TO 'c_manager';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- Assigning user 'dave_marketing' to Marketing role
+mysql> GRANT marketing_ TO 'd_marketing';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> -- Assigning user 'eve_warehouse' to Warehouse Staff role
+mysql> GRANT warehousestaff TO 'e_warehouse';
+Query OK, 0 rows affected (0.01 sec)
+
+mysql>
